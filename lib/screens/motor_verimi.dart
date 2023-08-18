@@ -57,21 +57,33 @@ class _MotorVerimiScreenState extends State<MotorVerimiScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nmotor Hesaplama'),
+        title: Text(
+          'Motor Verimi Hesaplama',
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+        //title: Text('Motor Verimi'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi Conv')),
-            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Total HM')),
-            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Guc Conv')),
-            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'NHidrolik')),
+            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi ')),
+            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ')),
+            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ')),
+            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ')),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _calculateNmotor,
-              child: Text('Nmotor Hesapla'),
-            ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black, // Buton rengini siyah olarak ayarlar
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Buton boyutunu ayarlar
+              ),
+              child: Text(
+                'Hesapla',
+                style: TextStyle(fontSize: 18), // Yazı boyutunu ayarlar
+              ),
+            )
           ],
         ),
       ),
@@ -80,6 +92,6 @@ class _MotorVerimiScreenState extends State<MotorVerimiScreen> {
 }
 
 double calculateNmotor(double debiConv, double totalHM, double gucConv, double nHidrolik) {
-  double nMotor = (debiConv * totalHM) / (gucConv * 367.2 * nHidrolik);
+  double nMotor = (debiConv * totalHM) / (gucConv * 367.2 * nHidrolik / 100);
   return nMotor;
 }
