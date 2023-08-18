@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+//import 'dart:math' as math;
 
 void main() => runApp(MyApp());
 
@@ -34,6 +34,16 @@ class ColorfulListViewScreen extends StatelessWidget {
     'Sürtünme Kaybı',
   ];
 
+  final List<String> _imagePaths = [
+    'lib/images/clampmeter.png',
+    'lib/images/2hyraulic.jpg',
+    'lib/images/2debi.jpg',
+    'lib/images/2basma_yüksekliği.jpg',
+    'lib/images/2motor.png',
+    'lib/images/2friction_loss.jpg',
+    'lib/images/2cable.jpg'
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,15 +69,28 @@ class ColorfulListViewScreen extends StatelessWidget {
                   color: _colors[index],
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Center(
-                  child: Text(
-                    _colorNames[index], // Renk isimlerini yazdırıyoruz
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10), // You can adjust the radius as needed
+                        child: Image.asset(
+                          _imagePaths[index],
+                          width: 80,
+                          height: 80,
+                        ),
+                      ),
                     ),
-                  ),
+                    Text(
+                      _colorNames[index],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -235,6 +258,7 @@ class _PowerDetailsScreenState extends State<PowerDetailsScreen> {
   }
 
   double calculatePower() {
+
     double debi_conv = double.tryParse(debiController.text) ?? 0.0;
     double total_HM = double.tryParse(hmController.text) ?? 0.0;
     double NMotor = double.tryParse(hidrVrmController.text) ?? 0.0;
@@ -242,7 +266,7 @@ class _PowerDetailsScreenState extends State<PowerDetailsScreen> {
 
     // Burada güç hesaplama işlemlerini gerçekleştirin, örneğin:
     // double result = value1 + value2 + value3 + value4;
-    double guc = (debi_conv * total_HM) / (NMotor * 367.2 * NHidrolik);
+    double guc = (debi_conv * total_HM) / (NMotor * 367.2 * NHidrolik/10000);
 
     return guc;
   }
