@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:solid_proje/screens/guc.dart';
+import 'package:solid_proje/screens/hidrolik_verim.dart';
 import 'package:solid_proje/screens/motor_verimi.dart';
 //import 'dart:math' as math;
 
@@ -163,36 +164,5 @@ void _openColorDetails(BuildContext context, String colorName) {
     default:
     // For other colors, you can handle navigation or show an error page.
       break;
-  }
-}
-
-
-class HydraulicEfficiencyDetailsScreen extends StatefulWidget {
-  @override
-  _HydraulicEfficiencyDetailsScreenState createState() =>
-      _HydraulicEfficiencyDetailsScreenState();
-}
-
-class _HydraulicEfficiencyDetailsScreenState
-    extends State<HydraulicEfficiencyDetailsScreen> {
-  // Declare any mutable state variables here, if needed.
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Hydraulic Efficiency',
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Text(
-          'This is the details screen for Hydraulic Efficiency',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
   }
 }
