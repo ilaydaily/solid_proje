@@ -11,13 +11,13 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
   TextEditingController nMotorController = TextEditingController();
   TextEditingController gucController = TextEditingController();
 
-  void _calculateNmotor() {
+  void _calculateNhidrolik() {
     double debiConv = double.tryParse(debiController.text) ?? 0.0;
     double totalHM = double.tryParse(totalHMController.text) ?? 0.0;
     double gucConv = double.tryParse(gucController.text) ?? 0.0;
-    double nHidrolik = double.tryParse(nMotorController.text) ?? 0.0;
+    double nMotor = double.tryParse(nMotorController.text) ?? 0.0;
 
-    if (debiConv == 0 || totalHM == 0 || gucConv == 0 || nHidrolik == 0) {
+    if (debiConv == 0 || totalHM == 0 || gucConv == 0 || nMotor == 0) {
       showDialog(
         context: context,
         builder: (context) {
@@ -34,13 +34,14 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
         },
       );
     } else {
-      double result = calculateNmotor(debiConv, totalHM, gucConv, nHidrolik);
+      double result = calculateNmotor(debiConv, totalHM, gucConv, nMotor);
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: Text('Sonuç'),
-            content: Text('NHidrolik değeri: $result'),
+            content: Text('NHidrolik değeri: ${result.toStringAsFixed(2)}'),
+              //print("Sonuç: ${nHidrolik.toStringAsFixed(2)}");
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -74,7 +75,7 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
             TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ')),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: _calculateNmotor,
+              onPressed: _calculateNhidrolik,
               style: ElevatedButton.styleFrom(
                 primary: Colors.black, // Buton rengini siyah olarak ayarlar
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Buton boyutunu ayarlar
@@ -92,6 +93,6 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
 }
 
 double calculateNmotor(double debiConv, double totalHM, double gucConv, double nMotor) {
-  double nHidrolik = (debiConv * totalHM) / (gucConv * 367.2 * nMotor / 100);
+  double nHidrolik = (debiConv * totalHM) / (gucConv * 367.2 * nMotor / 10000);
   return nHidrolik;
 }

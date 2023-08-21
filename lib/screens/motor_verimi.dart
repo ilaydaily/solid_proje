@@ -40,7 +40,7 @@ class _MotorVerimiScreenState extends State<MotorVerimiScreen> {
         builder: (context) {
           return AlertDialog(
             title: Text('Sonuç'),
-            content: Text('Nmotor değeri: $result'),
+            content: Text('Nmotor değeri: ${result.toStringAsFixed(2)}'),
             actions: [
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
