@@ -11,7 +11,7 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
   TextEditingController nMotorController = TextEditingController();
   TextEditingController gucController = TextEditingController();
 
-  String debiUnit = 'm^3/h';
+  String debiUnit = 'm³/h';
   String totalHMUnit = 'mSS';
   String nMotorUnit = '%';
   String gucUnit = 'kW';

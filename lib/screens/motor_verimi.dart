@@ -11,7 +11,7 @@ class _MotorVerimiScreenState extends State<MotorVerimiScreen> {
   TextEditingController nHidrolikController = TextEditingController();
   TextEditingController gucController = TextEditingController();
 
-  String debiUnit = 'm^3/h';
+  String debiUnit = 'm³/h';
   String totalHMUnit = 'mSS';
   String nHidrolikUnit = '%';
   String gucUnit = 'kW';
