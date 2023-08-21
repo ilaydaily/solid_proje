@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:solid_proje/screens/debi.dart';
 import 'package:solid_proje/screens/guc.dart';
 import 'package:solid_proje/screens/hidrolik_verim.dart';
 import 'package:solid_proje/screens/motor_verimi.dart';
@@ -125,7 +126,7 @@ void _openColorDetails(BuildContext context, String colorName) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => PowerDetailsScreen(),
+        builder: (context) => FlowDetailsScreen(),
       ),
     );
     break;
