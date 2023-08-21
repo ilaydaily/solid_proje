@@ -11,6 +11,11 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
   TextEditingController nMotorController = TextEditingController();
   TextEditingController gucController = TextEditingController();
 
+  String debiUnit = 'm^3/h';
+  String totalHMUnit = 'mSS';
+  String nMotorUnit = '%';
+  String gucUnit = 'kW';
+
   void _calculateNhidrolik() {
     double debiConv = double.tryParse(debiController.text) ?? 0.0;
     double totalHM = double.tryParse(totalHMController.text) ?? 0.0;
@@ -69,10 +74,11 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi ')),
-            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ')),
-            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ')),
-            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ')),
+            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi ($debiUnit)')),
+            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
+            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
+            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
+
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _calculateNhidrolik,

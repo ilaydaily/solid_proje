@@ -11,6 +11,11 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
   TextEditingController nMotorController = TextEditingController();
   TextEditingController nHidrolikController = TextEditingController();
 
+  String gucUnit = 'kW';
+  String totalHMUnit = 'mSS';
+  String nMotorUnit = '%';
+  String nHidrolikUnit = '%';
+
   void _calculateDebi() {
     double gucConv = double.tryParse(gucController.text) ?? 0.0;
     double totalHM = double.tryParse(totalHMController.text) ?? 0.0;
@@ -69,10 +74,10 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ')),
-            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ')),
-            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ')),
-            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ')),
+            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
+            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
+            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
+            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ($nHidrolikUnit)')),
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _calculateDebi,
@@ -94,5 +99,5 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
 
 double calculateDebi(double gucConv, double totalHM, double nMotor, double nHidrolik) {
   double debi = (gucConv * nMotor * nHidrolik * 367.2) / (totalHM / 10000);
-  return nHidrolik;
+  return debi;
 }

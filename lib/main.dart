@@ -3,7 +3,6 @@ import 'package:solid_proje/screens/debi.dart';
 import 'package:solid_proje/screens/guc.dart';
 import 'package:solid_proje/screens/hidrolik_verim.dart';
 import 'package:solid_proje/screens/motor_verimi.dart';
-//import 'dart:math' as math;
 
 void main() => runApp(MyApp());
 

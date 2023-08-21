@@ -11,6 +11,11 @@ class _MotorVerimiScreenState extends State<MotorVerimiScreen> {
   TextEditingController nHidrolikController = TextEditingController();
   TextEditingController gucController = TextEditingController();
 
+  String debiUnit = 'm^3/h';
+  String totalHMUnit = 'mSS';
+  String nHidrolikUnit = '%';
+  String gucUnit = 'kW';
+
   void _calculateNmotor() {
     double debiConv = double.tryParse(debiController.text) ?? 0.0;
     double totalHM = double.tryParse(totalHMController.text) ?? 0.0;
@@ -62,16 +67,21 @@ class _MotorVerimiScreenState extends State<MotorVerimiScreen> {
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
-        //title: Text('Motor Verimi'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi ')),
-            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ')),
-            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ')),
-            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ')),
+            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi ($debiUnit)')),
+            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
+            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
+            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ($nHidrolikUnit)')),
+            /*
+            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
+            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
+            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
+            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ($nHidrolikUnit)')),
+             */
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _calculateNmotor,
