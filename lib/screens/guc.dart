@@ -89,7 +89,7 @@ class _PowerDetailsScreenState extends State<PowerDetailsScreen> {
   void _updateResult() {
     double powerResult = calculatePower();
     setState(() {
-      result = 'Sonuç: $powerResult';
+      result = 'Sonuç: ${powerResult.toStringAsFixed(2)}';
     });
   }
 
