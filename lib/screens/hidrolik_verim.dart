@@ -11,6 +11,9 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
   TextEditingController nMotorController = TextEditingController();
   TextEditingController gucController = TextEditingController();
 
+  double result = 0.0;
+  String errorMessage = '';
+
   String debiUnit = 'm³/h';
   String totalHMUnit = 'mSS';
   String nMotorUnit = '%';
@@ -23,7 +26,12 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
     double nMotor = double.tryParse(nMotorController.text) ?? 0.0;
 
     if (debiConv == 0 || totalHM == 0 || gucConv == 0 || nMotor == 0) {
-      showDialog(
+      setState(() {
+        errorMessage = 'Lütfen tüm alanları doldurun.';
+        result = 0.0;
+      });
+
+      /*showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -37,10 +45,14 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
             ],
           );
         },
-      );
+      );*/
     } else {
-      double result = calculateNmotor(debiConv, totalHM, gucConv, nMotor);
-      showDialog(
+      setState(() {
+        errorMessage = '';
+        result = (debiConv * totalHM) / (gucConv * 367.2 * nMotor / 10000);
+      } );
+      //double result = calculateNhidrolik(debiConv, totalHM, gucConv, nMotor);
+      /*showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
@@ -55,8 +67,12 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
             ],
           );
         },
-      );
+      );*/
     }
+  }
+
+  void updateResultOnChange() {
+    _calculateNhidrolik();
   }
 
   @override
@@ -74,13 +90,18 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextField(controller: debiController, decoration: InputDecoration(labelText: 'Debi ($debiUnit)')),
-            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
-            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
-            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
+            TextField(controller: debiController, onChanged: (value) => updateResultOnChange(), decoration: InputDecoration(labelText: 'Debi ($debiUnit)')),
+            TextField(controller: totalHMController, onChanged: (value) => updateResultOnChange(), decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
+            TextField(controller: gucController,onChanged: (value) => updateResultOnChange(), decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
+            TextField(controller: nMotorController,onChanged: (value) => updateResultOnChange(), decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
 
             SizedBox(height: 16.0),
-            ElevatedButton(
+            Text(
+              'Hidrolik Verim: % ${result.toStringAsFixed(2)}',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+
+           /* ElevatedButton(
               onPressed: _calculateNhidrolik,
               style: ElevatedButton.styleFrom(
                 primary: Colors.black, // Buton rengini siyah olarak ayarlar
@@ -90,7 +111,7 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
                 'Hesapla',
                 style: TextStyle(fontSize: 18), // Yazı boyutunu ayarlar
               ),
-            )
+            )*/
           ],
         ),
       ),
@@ -98,7 +119,7 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
   }
 }
 
-double calculateNmotor(double debiConv, double totalHM, double gucConv, double nMotor) {
+double calculateNhidrolik(double debiConv, double totalHM, double gucConv, double nMotor) {
   double nHidrolik = (debiConv * totalHM) / (gucConv * 367.2 * nMotor / 10000);
   return nHidrolik;
 }
