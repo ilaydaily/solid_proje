@@ -95,6 +95,12 @@ class _HydraulicEfficiencyDetailsScreenState extends State<HydraulicEfficiencyDe
             TextField(controller: gucController,onChanged: (value) => updateResultOnChange(), decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
             TextField(controller: nMotorController,onChanged: (value) => updateResultOnChange(), decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
 
+            SizedBox(height: 8.0),
+            Text(
+              errorMessage,
+              style: TextStyle(color: Colors.red),
+            ),
+
             SizedBox(height: 16.0),
             Text(
               'Hidrolik Verim: % ${result.toStringAsFixed(2)}',
