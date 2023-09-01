@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
 class PowerDetailsScreen extends StatefulWidget {
-  //final String colorName;
-  // PowerDetailsScreen({required this.colorName});
-
   @override
   _PowerDetailsScreenState createState() => _PowerDetailsScreenState();
 }
@@ -14,97 +11,34 @@ class _PowerDetailsScreenState extends State<PowerDetailsScreen> {
   TextEditingController hidrVrmController = TextEditingController();
   TextEditingController motorVrmController = TextEditingController();
 
-  String result = ' ';
+  double result = 0.0;
+  String errorMessage = '';
 
-  //double diameter = 0.0;
-  double guc = 0.0;
+  String debiUnit = 'm³/h';
+  String totalHMUnit = 'mSS';
+  String nMotorUnit = '%';
+  String nHidrolikUnit = '%';
 
-  void operate() {
-    // Define your operate function logic here
-  }
-
-  double advancedResult() {
-
-    if(debiController.text.isNotEmpty && hmController.text.isNotEmpty
-        && hidrVrmController.text.isNotEmpty && motorVrmController.text.isNotEmpty){
-      double debi_conv = double.parse(debiController.text.replaceAll(',', '.'));
-      double total_HM = double.parse(hmController.text.replaceAll(',', '.'));
-      double NMotor = double.parse(motorVrmController.text.replaceAll(',', '.'));
-      double NHidrolik = double.parse(hidrVrmController.text.replaceAll(',', '.'));
-
-      if(NMotor * NHidrolik != 0){
-        var guc = (debi_conv * total_HM) / (NMotor * 367.2 * NHidrolik);
-      }
-      else {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Dikkat!'),
-              content: Text('Sayılar Dengeli Değil!'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Tamam'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    }
-    else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Dikkat!'),
-            content: Text('Girilmeyen Alanları Doldurun!'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('Tamam'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-    return guc;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    debiController.addListener(_updateResult);
-    hmController.addListener(_updateResult);
-    hidrVrmController.addListener(_updateResult);
-    motorVrmController.addListener(_updateResult);
-  }
-
-  void _updateResult() {
-    double powerResult = calculatePower();
-    setState(() {
-      result = 'Sonuç: ${powerResult.toStringAsFixed(2)}';
-    });
-  }
-
-  double calculatePower() {
-
+  void _calculatePower() {
     double debi_conv = double.tryParse(debiController.text) ?? 0.0;
     double total_HM = double.tryParse(hmController.text) ?? 0.0;
     double NMotor = double.tryParse(hidrVrmController.text) ?? 0.0;
     double NHidrolik = double.tryParse(motorVrmController.text) ?? 0.0;
 
-    // Burada güç hesaplama işlemlerini gerçekleştirin, örneğin:
-    // double result = value1 + value2 + value3 + value4;
-    double guc = (debi_conv * total_HM) / (NMotor * 367.2 * NHidrolik/10000);
+    if (debi_conv == 0 || total_HM == 0 || NMotor == 0 || NHidrolik == 0) {
+      setState(() {
+        errorMessage = 'Lütfen tüm alanları doldurun.';
+        result = 0.0;
+      });
+    } else {
+      setState(() {
+        errorMessage = '';
+        result = calculatePower(debi_conv, total_HM, NMotor, NHidrolik);
+      });
+    } }
 
-    return guc;
+  void updateResultOnChange() {
+    _calculatePower();
   }
 
   @override
@@ -118,118 +52,132 @@ class _PowerDetailsScreenState extends State<PowerDetailsScreen> {
         centerTitle: true,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              result,
-              style: TextStyle(fontSize: 24, color: Colors.white),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSquare("Debi", debiController),
-                SizedBox(width: 10),
-                _buildSquare("Basma Yüksekliği",hmController),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildSquare("Hidrolik Verim", hidrVrmController),
-                SizedBox(width: 10),
-                _buildSquare("Motor Verimi",motorVrmController),
-              ],
-            ),
-
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      // Add your code here to handle the tap/click action
-                      // For example, you can show a dialog or navigate to a new screen.
-                      print('container tapped!');
-                      _updateResult();
-                    },
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
                     child: Container(
-                      width: 310,
-                      height: 60,
                       decoration: BoxDecoration(
-                        color: Colors.black,
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0, //kutucuk kenar kalınlığı
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                      alignment: Alignment.center,
-                      child: Text('HESAPLA'),
+                      child: TextField(
+                        controller: debiController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Debi ($debiUnit)',
+                          border: InputBorder.none, // Dış kenarı kaldır
+                          contentPadding:
+                          EdgeInsets.all(8.0), // İçeriği hizala
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            8.0),
+                      ),
+                      child: TextField(
+                        controller: hmController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Basma Yüksekliği ($totalHMUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
-            )
-            //),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _buildSquare(String additionalText, TextEditingController controller) {
-    return GestureDetector(
-      onTap: () {
-        _showInputDialog(controller);
-      },
-      child: Container(
-        width: 150,
-        height: 150,
-        decoration: BoxDecoration(
-          color: Colors.white60,
-          shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        alignment: Alignment.center,
-        child: Column( // Use a Column to stack content vertically
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              controller.text,
-              style: TextStyle(fontSize: 18, color: Colors.black),
-            ),
-            SizedBox(height: 10), // Add spacing between the text
-            Text(
-              additionalText,
-              style: TextStyle(fontSize: 18, color: Colors.black),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+              SizedBox(height: 16.0),
 
-  void _showInputDialog(TextEditingController controller) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Veri Girin"),
-          content: TextField(
-            controller: controller,
-            keyboardType: TextInputType.text,
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            8.0),
+                      ),
+                      child: TextField(
+                        controller: motorVrmController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Motor Verimi ($nMotorUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            8.0),
+                      ),
+                      child: TextField(
+                        controller: hidrVrmController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Hidrolik Verim ($nHidrolikUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                'Güç:  ${result.toStringAsFixed(2)} kW',
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("Tamam"),
-            ),
-          ],
-        );
-      },
+        ),
+      ),
     );
   }
+}
+
+double calculatePower(double debi_conv, double total_HM, double NMotor, double NHidrolik) {
+  double guc = (debi_conv * total_HM) / (NMotor * 367.2 * NHidrolik/10000);
+  return guc;
 }
