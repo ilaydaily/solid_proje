@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class FlowDetailsScreen extends StatefulWidget {
   @override
   _FlowDetailsScreenState createState() => _FlowDetailsScreenState();
@@ -10,6 +9,8 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
   TextEditingController totalHMController = TextEditingController();
   TextEditingController nMotorController = TextEditingController();
   TextEditingController nHidrolikController = TextEditingController();
+  double result = 0.0;
+  String errorMessage = '';
 
   String gucUnit = 'kW';
   String totalHMUnit = 'mSS';
@@ -23,40 +24,19 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
     double nHidrolik = double.tryParse(nHidrolikController.text) ?? 0.0;
 
     if (gucConv == 0 || totalHM == 0 || nMotor == 0 || nHidrolik == 0) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Uyarı'),
-            content: Text('Lütfen tüm değerleri giriniz.'),
-            actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Tamam'),
-              ),
-            ],
-          );
-        },
-      );
+      setState(() {
+        errorMessage = 'Lütfen tüm alanları doldurun.';
+        result = 0.0;
+      });
     } else {
-      double result = calculateDebi(gucConv, totalHM, nMotor, nHidrolik);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Sonuç'),
-            content: Text('Debi değeri: ${result.toStringAsFixed(2)}'),
-            //print("Sonuç: ${nHidrolik.toStringAsFixed(2)}");
-            actions: [
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('Tamam'),
-              ),
-            ],
-          );
-        },
-      );
-    }
+      setState(() {
+        errorMessage = '';
+        result = calculateDebi(gucConv, totalHM, nMotor, nHidrolik);
+      });
+    } }
+
+  void updateResultOnChange() {
+    _calculateDebi();
   }
 
   @override
@@ -68,29 +48,127 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
           textAlign: TextAlign.center,
         ),
         centerTitle: true,
-        //title: Text('Motor Verimi'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(controller: gucController, decoration: InputDecoration(labelText: 'Güç ($gucUnit)')),
-            TextField(controller: totalHMController, decoration: InputDecoration(labelText: 'Basma Yüksekliği ($totalHMUnit)')),
-            TextField(controller: nMotorController, decoration: InputDecoration(labelText: 'Motor Verimi ($nMotorUnit)')),
-            TextField(controller: nHidrolikController, decoration: InputDecoration(labelText: 'Hidrolik Verim ($nHidrolikUnit)')),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: _calculateDebi,
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black, // Buton rengini siyah olarak ayarlar
-                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 32), // Buton boyutunu ayarlar
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: TextField(
+                        controller: gucController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Güç ($gucUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            8.0),
+                      ),
+                      child: TextField(
+                        controller: totalHMController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Basma Yüksekliği ($totalHMUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              child: Text(
-                'Hesapla',
-                style: TextStyle(fontSize: 18), // Yazı boyutunu ayarlar
+
+              SizedBox(height: 16.0),
+
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            8.0),
+                      ),
+                      child: TextField(
+                        controller: nMotorController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Motor Verimi ($nMotorUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 1.0,
+                        ),
+                        borderRadius: BorderRadius.circular(
+                            8.0),
+                      ),
+                      child: TextField(
+                        controller: nHidrolikController,
+                        onChanged: (value) => updateResultOnChange(),
+                        decoration: InputDecoration(
+                          labelText: 'Hidrolik Verim ($nHidrolikUnit)',
+                          border: InputBorder.none,
+                          contentPadding:
+                          EdgeInsets.all(8.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            )
-          ],
+              SizedBox(height: 16.0),
+              Text(
+                errorMessage,
+                style: TextStyle(color: Colors.red),
+              ),
+              SizedBox(height: 16.0),
+              Text(
+                'Debi:  ${result.toStringAsFixed(2)} m³/h',
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -98,6 +176,6 @@ class _FlowDetailsScreenState extends State<FlowDetailsScreen> {
 }
 
 double calculateDebi(double gucConv, double totalHM, double nMotor, double nHidrolik) {
-  double debi = (gucConv * nMotor * nHidrolik * 367.2) / (totalHM / 10000);
+  double debi = (gucConv * nMotor * nHidrolik * 367.2) / (totalHM * 10000);
   return debi;
 }
