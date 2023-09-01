@@ -24,7 +24,6 @@ class ColorfulListViewScreen extends StatelessWidget {
     Colors.deepOrange,
     Colors.amber,
     Colors.teal,
-    Colors.blueGrey,
     Colors.indigo,
     Colors.pink,
   ];
@@ -35,7 +34,6 @@ class ColorfulListViewScreen extends StatelessWidget {
     'Debi',
     'Basma Yüksekliği',
     'Motor Verimi',
-    'Kablo Maliyet',
     'Sürtünme Kaybı',
   ];
 
@@ -46,7 +44,6 @@ class ColorfulListViewScreen extends StatelessWidget {
     'lib/images/2basma_yüksekliği.jpg',
     'lib/images/2motor.png',
     'lib/images/2friction_loss.jpg',
-    'lib/images/2cable.jpg'
   ];
 
   @override
@@ -144,14 +141,6 @@ void _openColorDetails(BuildContext context, String colorName) {
         context,
         MaterialPageRoute(
           builder: (context) => MotorVerimiScreen(),
-        ),
-      );
-      break;
-    case 'Kablo Maliyet':
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PowerDetailsScreen(),
         ),
       );
       break;
