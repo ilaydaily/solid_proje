@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:solid_proje/screens/basma_y%C3%BCksekli%C4%9Fi.dart';
 import 'package:solid_proje/screens/debi.dart';
+import 'package:solid_proje/screens/frictionLoss.dart';
 import 'package:solid_proje/screens/guc.dart';
 import 'package:solid_proje/screens/hidrolik_verim.dart';
 import 'package:solid_proje/screens/motor_verimi.dart';
-import 'package:solid_proje/screens/surtunmeKaybiDeneme.dart';
-import 'package:solid_proje/screens/surtunme_kaybi.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.dark(), // Use dark theme
+      theme: ThemeData.dark(),
       home: ColorfulListViewScreen(),
     );
   }
@@ -149,7 +148,7 @@ void _openColorDetails(BuildContext context, String colorName) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => MyPumpScreen(),
+          builder: (context) => FrictionLossScreen(),
         ),
       );
       break;

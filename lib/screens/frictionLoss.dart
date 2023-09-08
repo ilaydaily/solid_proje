@@ -7,6 +7,28 @@ class FrictionLossScreen extends StatefulWidget {
 }
 
 class _FrictionLossScreenState extends State<FrictionLossScreen> {
+  // Malzeme türleri ve sürtünme katsayıları
+  Map<String, double> coefficients = {
+    "Galvanizli Çelik": 0.008,
+    "Aliminyum": 0.0014,
+    "Asbest Beton": 0.06,
+    "Bakır": 0.0014,
+    "Pürüzsüz Beton": 0.5,
+    "Orta Pürüzlü Beton": 1.5,
+    "Pürüzlü Beton": 2.5,
+    "Bitümlü Çelik": 0.03,
+    "Paslanmaz Çelik": 0.015,
+    "Pik Demir": 1.2,
+    "Bitünlü Demir": 0.11,
+    "Pirinç": 0.03,
+    "Polietilen": 0.02,
+    "Pvc": 0.00425,
+  };
+
+  var  viscosity=[1.7914,1.5179,1.5179,1.450,1.1384,1.085,1.0033,0.8926,0.8007,0.7235,0.6580,0.6019,0.55346,0.5113,0.47437,
+    0.441859,0.413086,0.387498,0.364647,0.344,0.325721,0.309076,0.294];
+  var temperatures=["0","5","10","12","15","18","20","25","30","35","40","45","50","55","60","65","70","75","80","85","90","95","100"];
+
 //  TextEditingController malzemeController = TextEditingController();
   TextEditingController sicaklikController = TextEditingController();
   TextEditingController debiController = TextEditingController();
@@ -15,6 +37,9 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
 
   String errorMessage = '';
   double result = 0.0;
+
+  // Seçilen malzeme türünü saklamak için bir değişken
+  String? selectedMaterial;
 
   // List<String> malzemeUnitOptions = ['Aliminyum', 'Bakır'];
   List<String> sicaklikUnitOptions = ['C', 'F'];
@@ -28,7 +53,25 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
   String boruCapiUnit = 'mm';
   String boruUzunluguUnit = 'm';
 
-  void _calculateNhidrolik() {
+   List<String> materialImages = [
+    //'Malzeme 1': 'assets/malzeme1.jpg',
+     'lib/images/galvanizli_boru.png',
+    'lib/images/aluminyum_boru.png',
+    'lib/images/asbest_boru.png',
+     'lib/images/bakir_boru.png',
+     'lib/images/pruruzsuz_beton_boru.png',
+    'lib/images/orta_puruzlu_beton_boru.png',
+     'lib/images/puruzlu_beton_boru.png',
+     'lib/images/bitumlu_celik_boru.png',
+     'lib/images/paslanmaz_çelik_boru.jpeg',
+    'lib/images/pik_demir_boru.png',
+     'lib/images/bitumlu_demir_boru.png',
+   'lib/images/pirinc_boru.png',
+    'lib/images/polyethylene_boru.png',
+    'lib/images/pvc_boru.png',
+  ];
+
+  void _calculateFriction() {
     double sicaklik = double.tryParse(sicaklikController.text) ?? 0.0;
     double debi = double.tryParse(debiController.text) ?? 0.0;
     double cap = double.tryParse(boruCapiController.text) ?? 0.0;
@@ -48,7 +91,7 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
   }
 
   void updateResultOnChange() {
-    _calculateNhidrolik();
+    _calculateFriction();
   }
 
   @override
@@ -65,6 +108,30 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
+            DropdownButton<String>(
+              value: selectedMaterial,
+              onChanged: (newValue) {
+                setState(() {
+                  selectedMaterial = newValue;
+                });
+              },
+              items: coefficients.keys.map((material) {
+                final index = coefficients.keys.toList().indexOf(material);
+                final imageFileName = materialImages[index];
+                return DropdownMenuItem<String>(
+                  value: material,
+                  child: Row(
+                    children: [
+                      Image.asset('$imageFileName',
+                          width: 30, height: 30),
+                      SizedBox(width: 10),
+                      Text(material),
+                    ],
+                  ),
+                );
+              }).toList(),
+              hint: Text('Malzeme Türünü Seçin'),
+            ),
             /* Row(
               children: [
                 Expanded(
@@ -238,6 +305,7 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
   
   double calculatefd() {
 
+    //double frictionCoefficient = coefficients[selectedMaterial!] ?? 0.0;
     var temperature = double.parse(sicaklikController.text);
     var flow = double.parse(debiController.text);
     var diameter = double.parse(boruCapiController.text) / 1000;
@@ -249,6 +317,10 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
     print(a);
     print(u);
 
+    /*var  viscosity=[1.7914,1.5179,1.5179,1.450,1.1384,1.085,1.0033,0.8926,0.8007,0.7235,0.6580,
+      0.6019,0.55346,0.5113,0.47437,0.441859,0.413086,0.387498,0.364647,0.344,0.325721,0.309076,0.294];
+
+    var temperatures=["0","5","10","12","15","18","20","25","30","35","40","45","50","55","60","65","70","75","80","85","90","95","100"];*/
     var colebrook = PumpEfficiency.calcColebrook(
         diameter, .00004, u, temperature
     );
@@ -399,153 +471,3 @@ class PumpEfficiency {
     return result;
   }
 }
-
-
-
-/*
-  Map<String, dynamic> calculatePumpEfficiency(
-      double flow,
-      double power,
-      double innerDiameter,
-      double k,
-      double l,
-      double temperature,
-      double motorEfficiency,
-      double waterLevel,
-      double pressure,
-      double exloss,
-      ) {
-    double calcVis(double t3) {
-      if (t3 == null || t3 <= 0 || t3 > 100) {
-        return 0;
-      }
-
-      const vis = [
-        [0, 1.791468],
-        [5, 1.517938],
-        [10, 1.306096],
-        [15, 1.138451],
-        [20, 1.003317],
-        [25, 0.892654],
-        [30, 0.800782],
-        [35, 0.723598],
-        [40, 0.658075],
-        [45, 0.601942],
-        [50, 0.553461],
-        [55, 0.511289],
-        [60, 0.474368],
-        [65, 0.441859],
-        [70, 0.413086],
-        [75, 0.387498],
-        [80, 0.364647],
-        [85, 0.344158],
-        [90, 0.325721],
-        [95, 0.309076],
-        [100, 0.294002],
-        [200, 0.294002]
-      ];
-
-      int i = vis.length;
-      for (var v = 0; v < vis.length; v++) {
-        if (t3 < vis[v][0]) {
-          i = v;
-          break;
-        }
-      }
-
-      var t1 = vis[i - 1][0];
-      var t2 = vis[i][0];
-      var v1 = vis[i - 1][1];
-      var v2 = vis[i][1];
-
-      var v3 = ((t2 - t3) * (v1 - v2)) / (t2 - t1) + v2;
-
-      return v3 / 1000000;
-    }
-
-    Map<String, dynamic> calcReynold(
-        double rho,
-        double u,
-        double innerDiameter,
-        double mu,
-        double vi,
-        ) {
-      Map<String, dynamic> result = {};
-      double re = -1;
-
-      if (rho != null && u != null && innerDiameter != null && mu != null && mu != 0) {
-        re = (rho * u * innerDiameter / mu).round() as double;
-      }
-      if (u != null && innerDiameter != null && vi != null) {
-        re = (u * innerDiameter / vi);
-      }
-
-      if (re > 4000) {
-        result["flow"] = "turbulans";
-      } else if (re > 2300 && re < 4000) {
-        result["flow"] = "turbulans - laminer";
-      } else if (re < 2300) {
-        result["flow"] = "laminer";
-      }
-      result["rn"] = re;
-
-      return result;
-    }
-
-    double frictionCoefficient(
-        double innerDiameter,
-        double k,
-        double re,
-        ) {
-      double lambda = 0.08;
-      var leftL = 1 / math.sqrt(lambda);
-      var rightL = -2 * math.log(2.51 / (re * math.sqrt(lambda)) + k / innerDiameter / 3.72);
-
-      while (rightL - leftL >= 0) {
-        leftL = 1 / math.sqrt(lambda);
-        rightL = -2 * math.log(2.51 / (re * math.sqrt(lambda)) + k / innerDiameter / 3.72);
-
-        lambda = lambda - 0.0005;
-      }
-      return lambda;
-    }
-
-    Map<String, dynamic> calcColebrook(
-        double innerDiameter,
-        double k,
-        double u,
-        double temperature,
-        ) {
-      Map<String, dynamic> result = {};
-      result["vi"] = calcVis(temperature);
-
-      Map<String, dynamic> rey = calcReynold(0, u, innerDiameter, 0, result["vi"]);
-      result["ren"] = rey["rn"];
-      result["fd"] = frictionCoefficient(innerDiameter, k, result["ren"]);
-      result["rr"] = k / innerDiameter;
-
-      result["turb"] = rey["flow"];
-      return result;
-    }
-
-    double a = math.pi * math.pow(innerDiameter, 2) / 4;
-    double u = flow / 3600 / a;
-    var result = calcColebrook(innerDiameter, k, u, temperature);
-
-    result["u"] = u;
-
-    try {
-      result["headLoss"] = (result["fd"] * l * math.pow(u, 2)) / (innerDiameter * (2 * 9.7905));
-    } catch (_) {
-      result["headLoss"] = exloss;
-    }
-
-    result["hm"] = (pressure * 10.197162 + waterLevel + result["headLoss"]);
-    result["hydraulic"] = (result["hm"] * flow) / (367.2 * power * motorEfficiency / 10000);
-    result["system"] = result["hydraulic"] * motorEfficiency / 100;
-
-    return result;
-  }*/
-
-
-//}
