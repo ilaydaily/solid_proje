@@ -304,7 +304,6 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
   }
   
   double calculatefd() {
-
     //double frictionCoefficient = coefficients[selectedMaterial!] ?? 0.0;
     var temperature = double.parse(sicaklikController.text);
     var flow = double.parse(debiController.text);
@@ -322,7 +321,7 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
 
     var temperatures=["0","5","10","12","15","18","20","25","30","35","40","45","50","55","60","65","70","75","80","85","90","95","100"];*/
     var colebrook = PumpEfficiency.calcColebrook(
-        diameter, .00004, u, temperature
+        diameter, coefficients[b_len], u, temperature
     );
 
     print(colebrook);
