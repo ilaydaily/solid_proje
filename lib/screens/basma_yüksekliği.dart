@@ -198,7 +198,7 @@ class _HMDetailsScreenState extends State<HMDetailsScreen> {
 
               SizedBox(height: 16.0),
               Text(
-                'Basma Yüksekliği: % ${result.toStringAsFixed(2)}',
+                'Basma Yüksekliği:  ${result.toStringAsFixed(2)} mSS',
                 style: TextStyle(
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
