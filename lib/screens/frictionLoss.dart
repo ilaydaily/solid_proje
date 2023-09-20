@@ -313,6 +313,7 @@ class _FrictionLossScreenState extends State<FrictionLossScreen> {
     var a = math.pi * math.pow(diameter, 2) / 4;
     var u = flow / 3600 / a;
 
+
     print(a);
     print(u);
 
